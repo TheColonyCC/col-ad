@@ -51,38 +51,57 @@
 
   // --- Navigation ---
 
-  window.startWizard = function () {
-    document.getElementById("hero").style.display = "none";
-    document.getElementById("wizard").style.display = "block";
-    state.step = 1;
-    renderStepIndicators();
+  function showStep(n, opts) {
+    var gen = opts && opts.generate;
+    var scroll = opts && opts.scroll !== false;
+
+    // Hide current step or hero
+    if (state.step === 0) {
+      document.getElementById("hero").style.display = "none";
+      document.getElementById("wizard").style.display = "block";
+    } else {
+      document.getElementById("step-" + state.step).style.display = "none";
+    }
+
+    state.step = n;
+
+    if (n === 0) {
+      document.getElementById("wizard").style.display = "none";
+      document.getElementById("hero").style.display = "block";
+    } else {
+      document.getElementById("wizard").style.display = "block";
+      document.getElementById("step-" + n).style.display = "block";
+      if (gen && n === 3) generateCommands();
+    }
+
     updateProgress();
-    document.getElementById("step-1").scrollIntoView({ behavior: "smooth" });
+    renderStepIndicators();
+    if (scroll) window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  window.startWizard = function () {
+    showStep(1, { scroll: true });
+    history.pushState({ step: 1 }, "", "#step-1");
   };
 
   window.nextStep = function (n) {
     if (n === 2 && !validateStep1()) return;
     if (n === 3 && !validateStep2()) return;
 
-    document.getElementById("step-" + state.step).style.display = "none";
-    state.step = n;
-    document.getElementById("step-" + n).style.display = "block";
-    updateProgress();
-    renderStepIndicators();
-
-    if (n === 3) generateCommands();
-
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    showStep(n, { generate: true, scroll: true });
+    history.pushState({ step: n }, "", "#step-" + n);
   };
 
   window.prevStep = function (n) {
-    document.getElementById("step-" + state.step).style.display = "none";
-    state.step = n;
-    document.getElementById("step-" + n).style.display = "block";
-    updateProgress();
-    renderStepIndicators();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    showStep(n, { scroll: true });
+    history.pushState({ step: n }, "", "#step-" + n);
   };
+
+  // Handle browser back/forward
+  window.addEventListener("popstate", function (e) {
+    var target = (e.state && e.state.step != null) ? e.state.step : 0;
+    showStep(target, { generate: target === 3, scroll: true });
+  });
 
   function updateProgress() {
     var pct = (state.step / totalSteps) * 100;
@@ -487,14 +506,28 @@
       .replace(/>/g, "&gt;");
   }
 
-  // --- Auto-format username ---
+  // --- Init ---
 
   document.addEventListener("DOMContentLoaded", function () {
+    // Auto-format username
     var usernameEl = document.getElementById("username");
     if (usernameEl) {
       usernameEl.addEventListener("input", function () {
         this.value = this.value.toLowerCase().replace(/[^a-z0-9-]/g, "");
       });
+    }
+
+    // Restore step from hash on page load (e.g. refresh on #step-2)
+    var hash = window.location.hash;
+    var match = hash.match(/^#step-(\d+)$/);
+    if (match) {
+      var target = parseInt(match[1], 10);
+      if (target >= 1 && target <= totalSteps) {
+        showStep(target, { scroll: false });
+        history.replaceState({ step: target }, "", hash);
+      }
+    } else {
+      history.replaceState({ step: 0 }, "", window.location.pathname);
     }
   });
 })();
