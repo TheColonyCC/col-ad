@@ -426,6 +426,52 @@
 
   // --- Copy ---
 
+  function copyText(text) {
+    // Try modern clipboard API first (requires HTTPS)
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).then(function () {
+        return true;
+      }).catch(function () {
+        return fallbackCopy(text);
+      });
+    }
+    // Fallback for HTTP / older browsers
+    return Promise.resolve(fallbackCopy(text));
+  }
+
+  function fallbackCopy(text) {
+    var textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "-9999px";
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    var ok = false;
+    try {
+      ok = document.execCommand("copy");
+    } catch (e) {
+      ok = false;
+    }
+    document.body.removeChild(textarea);
+    return ok;
+  }
+
+  function flashCopied(el, btn) {
+    el.classList.add("copied");
+    if (btn) {
+      btn.innerHTML = checkIconSvg + "<span>Copied!</span>";
+    }
+    showToast("Copied!");
+    setTimeout(function () {
+      el.classList.remove("copied");
+      if (btn) {
+        btn.innerHTML = copyIconSvg + "<span>Copy</span>";
+      }
+    }, 1500);
+  }
+
   function attachCopyHandlers() {
     var blocks = document.querySelectorAll("[data-copy]");
     blocks.forEach(function (el) {
@@ -433,21 +479,10 @@
       var handler = function (e) {
         e.stopPropagation();
         var text = el.getAttribute("data-copy");
-        navigator.clipboard.writeText(text).then(function () {
-          el.classList.add("copied");
-          if (btn) {
-            btn.innerHTML = checkIconSvg + "<span>Copied!</span>";
-          }
-          showToast("Copied!");
-          setTimeout(function () {
-            el.classList.remove("copied");
-            if (btn) {
-              btn.innerHTML = copyIconSvg + "<span>Copy</span>";
-            }
-          }, 1500);
+        copyText(text).then(function () {
+          flashCopied(el, btn);
         });
       };
-      // Copy on button click or block click
       if (btn) btn.addEventListener("click", handler);
       el.addEventListener("click", handler);
     });
@@ -459,7 +494,7 @@
     blocks.forEach(function (el) {
       all.push(el.getAttribute("data-copy"));
     });
-    navigator.clipboard.writeText(all.join("\n\n---\n\n")).then(function () {
+    copyText(all.join("\n\n---\n\n")).then(function () {
       showToast("All commands copied!");
     });
   };
