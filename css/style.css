@@ -140,8 +140,14 @@ main {
   font-size: 18px;
   color: var(--text-dim);
   max-width: 500px;
-  margin: 0 auto 40px;
+  margin: 0 auto 16px;
   line-height: 1.5;
+}
+
+.subtitle.tagline {
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 40px;
 }
 
 /* Buttons */
