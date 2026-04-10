@@ -9,6 +9,46 @@
 
   var totalSteps = 3;
 
+  var providerInfo = {
+    nous: {
+      name: "Nous Portal",
+      keyUrl: "https://portal.nousresearch.com",
+      keyLabel: "YOUR_NOUS_API_KEY",
+      info: 'You will need an API key from <a href="https://portal.nousresearch.com" target="_blank" rel="noopener">portal.nousresearch.com</a>. <strong>Do not paste it here</strong> — you will enter it directly in the terminal when running <code>hermes model</code>. Keep it private.',
+      defaultModel: "hermes-3-llama-3.1-70b",
+      modelHint: "See portal.nousresearch.com for available models",
+      hermesSelect: "Nous Portal",
+    },
+    openrouter: {
+      name: "OpenRouter",
+      keyUrl: "https://openrouter.ai/keys",
+      keyLabel: "YOUR_OPENROUTER_KEY",
+      info: 'You will need an API key from <a href="https://openrouter.ai/keys" target="_blank" rel="noopener">openrouter.ai/keys</a>. <strong>Do not paste it here</strong> — you will enter it directly in the terminal when running <code>hermes model</code>. Keep it private.',
+      defaultModel: "anthropic/claude-sonnet-4-5-20250514",
+      modelHint: "See openrouter.ai/models for the full list",
+      hermesSelect: "OpenRouter",
+    },
+    openai: {
+      name: "OpenAI",
+      keyUrl: "https://platform.openai.com/api-keys",
+      keyLabel: "YOUR_OPENAI_KEY",
+      info: 'You will need an API key from <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">platform.openai.com/api-keys</a>. <strong>Do not paste it here</strong> — you will enter it directly in the terminal when running <code>hermes model</code>. Keep it private.',
+      defaultModel: "gpt-4o",
+      modelHint: "Common: gpt-4o, gpt-4.1, o3-mini",
+      hermesSelect: "OpenAI",
+    },
+    anthropic: {
+      name: "Anthropic",
+      keyUrl: "https://console.anthropic.com",
+      keyLabel: "YOUR_ANTHROPIC_KEY",
+      info: 'You will need an API key from <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a>. <strong>Do not paste it here</strong> — you will enter it directly in the terminal when running <code>hermes model</code>. Keep it private.',
+      defaultModel: "claude-sonnet-4-5-20250514",
+      modelHint: "Common: claude-opus-4-5-20250514, claude-sonnet-4-5-20250514",
+      hermesSelect: "Custom endpoint",
+      customUrl: "https://api.anthropic.com/v1",
+    },
+  };
+
   // --- Navigation ---
 
   window.startWizard = function () {
@@ -111,36 +151,19 @@
     document.getElementById("ollama-options").style.display =
       provider === "ollama" ? "block" : "none";
     document.getElementById("paid-options").style.display =
-      ["nous", "openrouter", "openai", "anthropic"].indexOf(provider) !== -1
-        ? "block"
-        : "none";
+      providerInfo[provider] ? "block" : "none";
     document.getElementById("custom-options").style.display =
       provider === "custom" ? "block" : "none";
 
-    // Update hints for paid providers
-    var hints = {
-      nous: "Get your key at portal.nousresearch.com",
-      openrouter: "Get your key at openrouter.ai/keys",
-      openai: "Get your key at platform.openai.com/api-keys",
-      anthropic: "Get your key at console.anthropic.com",
-    };
-    var modelHints = {
-      nous: { placeholder: "hermes-3-llama-3.1-70b", hint: "See portal.nousresearch.com for available models" },
-      openrouter: { placeholder: "anthropic/claude-sonnet-4-5-20250514", hint: "See openrouter.ai/models for the full list" },
-      openai: { placeholder: "gpt-4o", hint: "Common: gpt-4o, gpt-4.1, o3-mini" },
-      anthropic: { placeholder: "claude-sonnet-4-5-20250514", hint: "Common: claude-opus-4-5-20250514, claude-sonnet-4-5-20250514" },
-    };
+    // Update info box and model input for paid providers
+    if (providerInfo[provider]) {
+      var info = providerInfo[provider];
+      document.getElementById("providerInfo").innerHTML = info.info;
 
-    if (hints[provider]) {
-      document.getElementById("apiKeyHint").textContent =
-        hints[provider] + ". This stays in your browser — nothing is sent to any server.";
-    }
-
-    if (modelHints[provider]) {
       var mg = document.getElementById("modelNameGroup");
       mg.style.display = "block";
-      document.getElementById("modelName").placeholder = modelHints[provider].placeholder;
-      document.getElementById("modelNameHint").textContent = modelHints[provider].hint;
+      document.getElementById("modelName").placeholder = info.defaultModel;
+      document.getElementById("modelNameHint").textContent = info.modelHint;
     } else {
       document.getElementById("modelNameGroup").style.display = "none";
     }
@@ -215,46 +238,41 @@
 
     if (state.provider === "ollama") {
       configDesc =
-        'Run <code>hermes setup</code> and choose <strong>Custom endpoint</strong>. Or configure directly:';
+        'Run <code>hermes model</code> and choose <strong>Custom endpoint</strong>:';
       configCmd =
         "hermes model\n# Select: Custom endpoint\n# API base URL: http://localhost:11434/v1\n# Model name: " +
         state.model +
         "\n# API key: (leave blank)";
-    } else if (state.provider === "nous") {
-      configDesc = "Run <code>hermes setup</code> and choose <strong>Nous Portal</strong>.";
-      configCmd = "hermes model\n# Select: Nous Portal\n# API key: " + (val("apiKey") || "YOUR_NOUS_API_KEY");
-      var nousModel = val("modelName") || "hermes-3-llama-3.1-70b";
-      configCmd += "\n# Model: " + nousModel;
-    } else if (state.provider === "openrouter") {
-      configDesc = "Configure Hermes to use OpenRouter:";
-      var orModel = val("modelName") || "anthropic/claude-sonnet-4-5-20250514";
-      configCmd =
-        "hermes model\n# Select: OpenRouter\n# API key: " +
-        (val("apiKey") || "YOUR_OPENROUTER_KEY") +
-        "\n# Model: " + orModel;
-    } else if (state.provider === "openai") {
-      configDesc = "Configure Hermes to use OpenAI:";
-      var oaiModel = val("modelName") || "gpt-4o";
-      configCmd =
-        "hermes model\n# Select: OpenAI\n# API key: " +
-        (val("apiKey") || "YOUR_OPENAI_KEY") +
-        "\n# Model: " + oaiModel;
-    } else if (state.provider === "anthropic") {
-      configDesc = "Configure Hermes to use Anthropic:";
-      var antModel = val("modelName") || "claude-sonnet-4-5-20250514";
-      configCmd =
-        "hermes model\n# Select: Custom endpoint\n# API base URL: https://api.anthropic.com/v1\n# API key: " +
-        (val("apiKey") || "YOUR_ANTHROPIC_KEY") +
-        "\n# Model: " + antModel;
+    } else if (providerInfo[state.provider]) {
+      var info = providerInfo[state.provider];
+      var model = val("modelName").trim() || info.defaultModel;
+
+      configDesc =
+        'Run <code>hermes model</code> and select <strong>' + info.hermesSelect + '</strong>. ' +
+        'Hermes will prompt you for your API key in the terminal \u2014 paste it there (not in this browser).';
+
+      if (info.customUrl) {
+        configCmd =
+          "hermes model\n# Select: " + info.hermesSelect +
+          "\n# API base URL: " + info.customUrl +
+          "\n# Model: " + model +
+          "\n# API key: (paste your key when prompted)";
+      } else {
+        configCmd =
+          "hermes model\n# Select: " + info.hermesSelect +
+          "\n# Model: " + model +
+          "\n# API key: (paste your key when prompted)";
+      }
     } else if (state.provider === "custom") {
-      configDesc = "Configure Hermes to use your custom endpoint:";
+      configDesc =
+        'Run <code>hermes model</code> and select <strong>Custom endpoint</strong>. ' +
+        'If your endpoint requires an API key, Hermes will prompt you for it in the terminal.';
       configCmd =
         "hermes model\n# Select: Custom endpoint\n# API base URL: " +
         (val("customUrl") || "https://your-server.com/v1") +
-        "\n# API key: " +
-        (val("customKey") || "(leave blank if not required)") +
         "\n# Model: " +
-        (val("customModel") || "your-model");
+        (val("customModel") || "your-model") +
+        "\n# API key: (paste your key when prompted, or leave blank)";
     }
 
     sections.push(

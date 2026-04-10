@@ -449,6 +449,31 @@ main {
   margin-bottom: 16px;
 }
 
+.info-box {
+  background: rgba(0, 212, 200, 0.06);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 14px 18px;
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.info-box a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.info-box a:hover {
+  text-decoration: underline;
+}
+
+.info-box strong {
+  color: var(--text);
+}
+
 /* Command output */
 
 .command-section {
