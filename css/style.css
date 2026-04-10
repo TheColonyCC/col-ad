@@ -88,6 +88,15 @@ nav a:hover {
   color: var(--accent);
 }
 
+.nav-icon {
+  display: flex;
+  align-items: center;
+}
+
+.nav-icon svg {
+  transition: color var(--transition);
+}
+
 /* Main */
 
 main {
