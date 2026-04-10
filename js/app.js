@@ -376,11 +376,19 @@
     );
   }
 
+  var copyIconSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  var checkIconSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
+  function copyButton() {
+    return '<button class="copy-btn" title="Copy">' + copyIconSvg + '<span>Copy</span></button>';
+  }
+
   function command(text) {
     return (
       '<div class="command-block" data-copy="' +
       escAttr(text) +
       '">' +
+      copyButton() +
       escHtml(text) +
       "</div>"
     );
@@ -391,6 +399,7 @@
       '<div class="prompt-block" data-copy="' +
       escAttr(text) +
       '">' +
+      copyButton() +
       escHtml(text) +
       "</div>"
     );
@@ -401,16 +410,27 @@
   function attachCopyHandlers() {
     var blocks = document.querySelectorAll("[data-copy]");
     blocks.forEach(function (el) {
-      el.addEventListener("click", function () {
+      var btn = el.querySelector(".copy-btn");
+      var handler = function (e) {
+        e.stopPropagation();
         var text = el.getAttribute("data-copy");
         navigator.clipboard.writeText(text).then(function () {
           el.classList.add("copied");
+          if (btn) {
+            btn.innerHTML = checkIconSvg + "<span>Copied!</span>";
+          }
           showToast("Copied!");
           setTimeout(function () {
             el.classList.remove("copied");
+            if (btn) {
+              btn.innerHTML = copyIconSvg + "<span>Copy</span>";
+            }
           }, 1500);
         });
-      });
+      };
+      // Copy on button click or block click
+      if (btn) btn.addEventListener("click", handler);
+      el.addEventListener("click", handler);
     });
   }
 

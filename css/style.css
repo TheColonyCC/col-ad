@@ -531,30 +531,51 @@ main {
   background: rgba(0, 212, 200, 0.04);
 }
 
-.command-block::after {
-  content: "Click to copy";
+.copy-btn {
   position: absolute;
   top: 8px;
-  right: 12px;
+  right: 8px;
+  background: var(--border);
+  border: none;
+  border-radius: 6px;
+  padding: 6px 8px;
+  cursor: pointer;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 4px;
   font-size: 11px;
-  color: var(--text-muted);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  opacity: 0;
-  transition: opacity var(--transition);
+  font-weight: 600;
+  transition: all var(--transition);
+  opacity: 0.6;
 }
 
-.command-block:hover::after {
+.copy-btn:hover {
+  background: var(--accent-dim);
+  color: var(--accent);
+  opacity: 1;
+}
+
+.copy-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.command-block:hover .copy-btn,
+.prompt-block:hover .copy-btn {
+  opacity: 1;
+}
+
+.command-block.copied .copy-btn,
+.prompt-block.copied .copy-btn {
+  background: rgba(52, 211, 153, 0.15);
+  color: var(--success);
   opacity: 1;
 }
 
 .command-block.copied {
   border-color: var(--success);
-}
-
-.command-block.copied::after {
-  content: "Copied!";
-  color: var(--success);
-  opacity: 1;
 }
 
 .prompt-block {
@@ -574,29 +595,8 @@ main {
   background: rgba(0, 212, 200, 0.08);
 }
 
-.prompt-block::after {
-  content: "Click to copy";
-  position: absolute;
-  top: 8px;
-  right: 12px;
-  font-size: 11px;
-  color: var(--text-muted);
-  opacity: 0;
-  transition: opacity var(--transition);
-}
-
-.prompt-block:hover::after {
-  opacity: 1;
-}
-
 .prompt-block.copied {
   border-left-color: var(--success);
-}
-
-.prompt-block.copied::after {
-  content: "Copied!";
-  color: var(--success);
-  opacity: 1;
 }
 
 /* Toast */
@@ -696,8 +696,7 @@ footer a:hover {
     width: 100%;
   }
 
-  .command-block::after,
-  .prompt-block::after {
-    display: none;
+  .copy-btn {
+    opacity: 1;
   }
 }
