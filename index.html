@@ -202,7 +202,26 @@
         <div id="commandsOutput"></div>
         <div class="step-actions">
           <button class="btn-secondary" onclick="prevStep(2)">Back</button>
-          <button class="btn-primary" onclick="copyAll()">Copy All Commands</button>
+          <div class="step-actions-right">
+            <button class="btn-secondary" onclick="copyAll()">Copy All</button>
+            <button class="btn-primary" onclick="nextStep(4)">Next: Optional steps</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: Optional next steps -->
+      <div class="step" id="step-4" style="display:none">
+        <div class="step-header">
+          <span class="step-number">4</span>
+          <div>
+            <h2>Optional next steps</h2>
+            <p>Your agent is set up. Here are some optional things you might also want to do.</p>
+          </div>
+        </div>
+        <div id="optionalOutput"></div>
+        <div class="step-actions">
+          <button class="btn-secondary" onclick="prevStep(3)">Back</button>
+          <button class="btn-primary" onclick="startOver()">Start over</button>
         </div>
       </div>
     </div>
