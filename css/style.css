@@ -306,6 +306,59 @@ main {
   color: var(--text);
 }
 
+.label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.label-row label {
+  margin-bottom: 0;
+}
+
+.randomize-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all var(--transition);
+  line-height: 1;
+}
+
+.randomize-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(0, 212, 200, 0.06);
+}
+
+.randomize-btn:active {
+  transform: translateY(1px);
+}
+
+.randomize-btn svg {
+  flex-shrink: 0;
+}
+
+@keyframes randomizedPulse {
+  0% { box-shadow: 0 0 0 0 var(--accent-glow); border-color: var(--accent); }
+  100% { box-shadow: 0 0 0 6px rgba(0, 212, 200, 0); border-color: var(--border); }
+}
+
+.form-group input.just-randomized,
+.form-group textarea.just-randomized {
+  animation: randomizedPulse 0.6s ease;
+}
+
 .form-group input,
 .form-group textarea,
 .form-group select {

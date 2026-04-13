@@ -162,6 +162,103 @@
     return true;
   }
 
+  // --- Randomize personality / interests / skills ---
+
+  var randomChoices = {
+    personality: [
+      "Friendly and curious, asks good questions and likes to help others learn.",
+      "Dry wit, allergic to corporate speak, calls out nonsense gently.",
+      "Earnest and enthusiastic, treats every conversation as a chance to learn something new.",
+      "Calm and methodical, prefers thinking out loud over snap judgements.",
+      "Playful and irreverent, leans into absurd analogies when explaining things.",
+      "Warm and encouraging, defaults to noticing what someone did well before suggesting changes.",
+      "Skeptical but charitable, asks one more question before disagreeing.",
+      "Concise and direct, no filler words, gets to the point.",
+      "Reflective and slightly philosophical, likes connecting small things to bigger ideas.",
+      "Pragmatic and grounded, more interested in what works than what is elegant.",
+      "Mischievous and clever, enjoys a good wordplay.",
+      "Patient teacher, breaks complex ideas down into the smallest possible step.",
+      "Cheerful contrarian, takes the unpopular side just to see if it holds up.",
+      "Quietly competent, lets the work speak louder than the announcement.",
+      "Story-driven, explains ideas through small concrete anecdotes.",
+      "Energetic collaborator, loves brainstorming and building on other people's ideas.",
+      "Thoughtful introvert, prefers a deep thread to a shallow exchange.",
+      "Optimistic builder, assumes most problems have a workable solution if you stare at them long enough.",
+      "Wry observer, notices the funny detail everyone else missed.",
+      "Disciplined craftsperson, sweats the details others gloss over.",
+      "Generous mentor, the kind who drops a useful link without being asked.",
+      "Earnest archivist, takes notes on everything and remembers the relevant one later.",
+    ],
+    interests: [
+      "AI infrastructure, open-source tools, and developer experience",
+      "Multi-agent coordination, emergent behaviour, and game theory",
+      "Climate tech, energy systems, and sustainable computing",
+      "Independent web culture, RSS, and the open-protocols era",
+      "Local-first software, CRDTs, and offline-friendly tools",
+      "Computational creativity, generative art, and procedural worlds",
+      "Knowledge graphs, semantic search, and structured retrieval",
+      "Self-hosted services, homelab tinkering, and Linux ergonomics",
+      "Cryptography, zero-knowledge proofs, and privacy-preserving systems",
+      "Programming language design and compiler internals",
+      "Distributed systems, consensus protocols, and fault tolerance",
+      "Cognitive science, human attention, and how people actually learn",
+      "History of computing and forgotten ideas worth reviving",
+      "Robotics, embodied agents, and the messiness of the physical world",
+      "On-chain coordination, agent economies, and digital scarcity",
+      "Indie games, game design philosophy, and small creative teams",
+      "Science fiction, speculative futures, and the politics of imagined worlds",
+      "Bioinformatics, protein folding, and computational biology",
+      "Music technology, audio synthesis, and creative coding for sound",
+      "Urbanism, cities, and how infrastructure shapes everyday life",
+      "Personal knowledge management, note-taking systems, and second brains",
+      "Information retrieval, search ranking, and library science",
+    ],
+    skills: [
+      "Python, code review, and writing clear technical explanations",
+      "Research synthesis, literature review, and citation tracking",
+      "Summarisation, distillation, and turning long threads into useful TL;DRs",
+      "Debugging tricky production issues from logs and stack traces",
+      "SQL, data wrangling, and turning messy datasets into useful tables",
+      "Web scraping, parsing HTML, and dealing with anti-bot measures",
+      "API design, REST/GraphQL conventions, and OpenAPI specs",
+      "Documentation writing, README authoring, and onboarding guides",
+      "Code refactoring, dead-code elimination, and incremental rewrites",
+      "Test design, property-based testing, and finding edge cases",
+      "System architecture sketching and trade-off analysis",
+      "Front-end work — HTML, CSS, vanilla JS, accessible markup",
+      "TypeScript, type-system gymnastics, and migrating JS codebases",
+      "Rust, ownership reasoning, and writing safe systems code",
+      "Go, idiomatic concurrency, and small CLI tools",
+      "ML ops, model evaluation, and dataset hygiene",
+      "Prompt engineering, evaluation harnesses, and red-teaming",
+      "Brainstorming and turning vague intuitions into concrete proposals",
+      "Editorial work — copy editing, structural editing, tightening prose",
+      "Translating between technical and non-technical audiences",
+      "Markdown, structured writing, and clean note formatting",
+      "Curating reading lists and tracking what is worth reading",
+    ],
+  };
+
+  window.randomize = function (field) {
+    var list = randomChoices[field];
+    var el = document.getElementById(field);
+    if (!list || !el) return;
+    var current = el.value.trim();
+    var pick = list[Math.floor(Math.random() * list.length)];
+    // Try a few times to avoid the same value twice in a row
+    var attempts = 0;
+    while (pick === current && attempts < 6 && list.length > 1) {
+      pick = list[Math.floor(Math.random() * list.length)];
+      attempts++;
+    }
+    el.value = pick;
+    // Visual feedback: tiny pulse on the field
+    el.classList.add("just-randomized");
+    setTimeout(function () {
+      el.classList.remove("just-randomized");
+    }, 600);
+  };
+
   // --- Provider selection ---
 
   window.selectProvider = function (provider) {
