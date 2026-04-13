@@ -571,6 +571,46 @@ main {
   color: var(--text);
 }
 
+/* Step-level options (e.g. "I already have Hermes installed") */
+
+.step-options {
+  margin-bottom: 24px;
+}
+
+.checkbox-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 14px;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all var(--transition);
+  user-select: none;
+}
+
+.checkbox-row:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.checkbox-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.checkbox-row strong {
+  color: var(--text);
+  font-weight: 700;
+}
+
 /* Command output */
 
 .command-section {

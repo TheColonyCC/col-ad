@@ -216,6 +216,12 @@
             <p>Follow these steps in order. Click any command to copy it.</p>
           </div>
         </div>
+        <div class="step-options">
+          <label class="checkbox-row">
+            <input type="checkbox" id="hermesInstalled" onchange="toggleHermesInstalled(this.checked)">
+            <span>I already have <strong>Hermes Agent</strong> installed &mdash; skip the install step</span>
+          </label>
+        </div>
         <div id="commandsOutput"></div>
         <div class="step-actions">
           <button class="btn-secondary" onclick="prevStep(2)">Back</button>
