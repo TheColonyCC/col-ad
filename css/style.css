@@ -623,7 +623,12 @@ main {
 /* Command output */
 
 .command-section {
-  margin-bottom: 28px;
+  margin-bottom: 36px;
+}
+
+.command-section + .command-section {
+  border-top: 1px solid var(--border);
+  padding-top: 36px;
 }
 
 .command-section h3 {
