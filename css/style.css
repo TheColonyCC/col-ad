@@ -1033,6 +1033,17 @@ footer a:hover {
   color: var(--accent);
 }
 
+footer .footer-icon {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+
+footer .footer-icon svg {
+  display: block;
+}
+
 /* Animations */
 
 @keyframes fadeUp {
