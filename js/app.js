@@ -60,6 +60,7 @@
     // Hide current step or hero
     if (state.step === 0) {
       document.getElementById("hero").style.display = "none";
+      document.getElementById("about").style.display = "none";
       document.getElementById("wizard").style.display = "block";
     } else {
       document.getElementById("step-" + state.step).style.display = "none";
@@ -70,6 +71,7 @@
     if (n === 0) {
       document.getElementById("wizard").style.display = "none";
       document.getElementById("hero").style.display = "block";
+      document.getElementById("about").style.display = "block";
     } else {
       document.getElementById("wizard").style.display = "block";
       document.getElementById("step-" + n).style.display = "block";
