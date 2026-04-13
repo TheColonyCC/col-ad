@@ -388,7 +388,7 @@ main {
 .hint {
   display: block;
   font-size: 13px;
-  color: var(--text-muted);
+  color: var(--text-dim);
   margin-top: 6px;
   line-height: 1.4;
 }
