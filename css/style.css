@@ -963,8 +963,13 @@ footer a:hover {
     font-size: 13px;
   }
 
+  .logo-primary {
+    font-size: 20px;
+  }
+
   .logo-secondary {
-    display: none;
+    font-size: 13px;
+    margin-top: 4px;
   }
 
   main {
