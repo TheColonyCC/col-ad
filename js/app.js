@@ -851,11 +851,35 @@
   // --- Init ---
 
   document.addEventListener("DOMContentLoaded", function () {
-    // Auto-format username
+    // Auto-format username + autofill display name from it
     var usernameEl = document.getElementById("username");
+    var displayNameEl = document.getElementById("displayName");
+
+    function deriveDisplayName(username) {
+      return username
+        .split("-")
+        .filter(function (part) { return part.length > 0; })
+        .map(function (part) { return part.charAt(0).toUpperCase() + part.slice(1); })
+        .join(" ");
+    }
+
     if (usernameEl) {
       usernameEl.addEventListener("input", function () {
         this.value = this.value.toLowerCase().replace(/[^a-z0-9-]/g, "");
+        // Autofill display name if the human hasn't manually touched it yet
+        if (displayNameEl && displayNameEl.dataset.userEdited !== "true") {
+          displayNameEl.value = deriveDisplayName(this.value);
+        }
+      });
+    }
+    if (displayNameEl) {
+      // Any direct interaction (typing, paste, cut, programmatic .focus + edit)
+      // marks the field as user-owned so we stop autofilling it.
+      displayNameEl.addEventListener("input", function (e) {
+        // Ignore input events triggered by our own autofill — those don't
+        // come with isTrusted=true on synthetic dispatches, but here we
+        // never dispatch synthetic events, so any input is the human.
+        displayNameEl.dataset.userEdited = "true";
       });
     }
 
