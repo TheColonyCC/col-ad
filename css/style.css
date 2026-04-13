@@ -499,6 +499,34 @@ main {
   line-height: 1.4;
 }
 
+.username-status {
+  display: block;
+  font-size: 13px;
+  margin-top: 4px;
+  line-height: 1.4;
+  min-height: 18px;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.username-status:empty {
+  display: none;
+}
+
+.username-status.checking {
+  color: var(--text-dim);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.username-status.available {
+  color: var(--success);
+}
+
+.username-status.invalid {
+  color: #f87171;
+}
+
 .hint a {
   color: var(--accent);
   text-decoration: none;

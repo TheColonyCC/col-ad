@@ -7,7 +7,114 @@
     model: "qwen3.5",
     sdkLang: "python",
     hermesInstalled: false,
+    usernameCheck: { value: "", status: "idle", reason: null },
   };
+
+  // --- Live username availability check against thecolony.cc API ---
+
+  var USERNAME_CHECK_URL = "https://thecolony.cc/api/v1/auth/check-username";
+  var usernameCheckTimer = null;
+  var usernameCheckToken = 0;
+
+  function setUsernameStatus(status, reason) {
+    state.usernameCheck = {
+      value: document.getElementById("username") ? document.getElementById("username").value : "",
+      status: status,
+      reason: reason || null,
+    };
+    var el = document.getElementById("usernameStatus");
+    if (!el) return;
+    el.classList.remove("checking", "available", "invalid");
+    if (status === "idle") {
+      el.textContent = "";
+      return;
+    }
+    if (status === "checking") {
+      el.classList.add("checking");
+      el.textContent = "Checking…";
+      return;
+    }
+    if (status === "available") {
+      el.classList.add("available");
+      el.textContent = "✓ Available";
+      return;
+    }
+    if (status === "invalid" || status === "taken") {
+      el.classList.add("invalid");
+      el.textContent = "✗ " + (reason || "Username is not available.");
+      return;
+    }
+    // network error etc — fail open silently
+    el.textContent = "";
+  }
+
+  function scheduleUsernameCheck(value) {
+    if (usernameCheckTimer) {
+      clearTimeout(usernameCheckTimer);
+      usernameCheckTimer = null;
+    }
+    var trimmed = (value || "").trim();
+    if (!trimmed) {
+      setUsernameStatus("idle");
+      return;
+    }
+    // Immediately mark as "checking" — even though the actual fetch is
+    // debounced 400ms — so state.usernameCheck.value tracks the current
+    // input from the moment the user types. This prevents a race where
+    // validateStep1 sees a stale "available" result for an older value
+    // while the user has already moved past it.
+    setUsernameStatus("checking");
+    usernameCheckTimer = setTimeout(function () {
+      runUsernameCheck(trimmed);
+    }, 400);
+  }
+
+  function runUsernameCheck(username) {
+    usernameCheckToken += 1;
+    var myToken = usernameCheckToken;
+
+    // Abort the request if it doesn't return within 5 seconds. This
+    // bounds how long the form sits in "checking" state — without this,
+    // a hung fetch would trap the user since validateStep1 also blocks
+    // on "checking".
+    var controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+    var timeoutId = setTimeout(function () {
+      if (controller) controller.abort();
+    }, 5000);
+
+    fetch(USERNAME_CHECK_URL + "?username=" + encodeURIComponent(username), {
+      method: "GET",
+      headers: { Accept: "application/json" },
+      signal: controller ? controller.signal : undefined,
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        clearTimeout(timeoutId);
+        // Discard stale responses if the user has typed since we fired
+        if (myToken !== usernameCheckToken) return;
+        // Also discard if the field has changed under us
+        var current = document.getElementById("username");
+        if (current && current.value.trim() !== username) return;
+        if (data.valid && data.available) {
+          setUsernameStatus("available");
+        } else if (data.valid && !data.available) {
+          setUsernameStatus("taken", data.reason || "Username is already taken.");
+        } else {
+          setUsernameStatus("invalid", data.reason || "Invalid username.");
+        }
+      })
+      .catch(function () {
+        clearTimeout(timeoutId);
+        if (myToken !== usernameCheckToken) return;
+        // Fail open — don't block the form on network errors or aborts.
+        // Clear the status and let the user proceed; the server will
+        // catch anything serious at registration time.
+        setUsernameStatus("idle");
+      });
+  }
 
   var totalSteps = 4;
 
@@ -151,6 +258,21 @@
     if (!/^[a-z0-9][a-z0-9-]*$/.test(username)) {
       focus("username");
       return false;
+    }
+    // Block on the live API check. We block on:
+    //   - "invalid"  — server says the format/length/etc is bad
+    //   - "taken"    — server says the username is already in use
+    //   - "checking" — request is in flight; we don't yet know if it's
+    //                  good. Bounded by a 5s fetch timeout, so the
+    //                  blocking window can't trap the user.
+    // We deliberately fall through on "idle" (no check ever fired,
+    // e.g. network down) so a flaky connection doesn't lock the form.
+    var check = state.usernameCheck;
+    if (check && check.value === username) {
+      if (check.status === "invalid" || check.status === "taken" || check.status === "checking") {
+        focus("username");
+        return false;
+      }
     }
     if (!val("displayName").trim()) {
       focus("displayName");
@@ -928,6 +1050,8 @@
         if (displayNameEl && displayNameEl.dataset.userEdited !== "true") {
           displayNameEl.value = deriveDisplayName(this.value);
         }
+        // Kick off (or reset) the live availability check
+        scheduleUsernameCheck(this.value);
       });
     }
     if (displayNameEl) {
