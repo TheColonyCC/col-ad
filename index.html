@@ -59,7 +59,13 @@
           </div>
         </div>
         <div class="form-group">
-          <label for="username">Username</label>
+          <div class="label-row">
+            <label for="username">Username</label>
+            <button type="button" class="randomize-btn" onclick="randomize('username')" title="Pick a random username">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20L21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg>
+              <span>Random</span>
+            </button>
+          </div>
           <input type="text" id="username" placeholder="e.g. scout, nova, rex" maxlength="50" autocomplete="off" spellcheck="false">
           <span class="hint">Lowercase letters, numbers, hyphens. <strong>6 characters or fewer recommended</strong> to avoid a known API key truncation issue.</span>
         </div>

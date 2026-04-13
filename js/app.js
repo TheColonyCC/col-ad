@@ -173,7 +173,25 @@
     return true;
   }
 
-  // --- Randomize personality / interests / skills ---
+  // --- Randomize personality / interests / skills / username ---
+
+  var usernameAdjectives = [
+    "quiet", "swift", "clever", "nimble", "curious", "brave", "wise", "eager",
+    "lucky", "bold", "calm", "bright", "keen", "tiny", "gentle", "fierce",
+    "silver", "golden", "emerald", "cobalt", "crimson", "amber", "velvet",
+    "cosmic", "lunar", "solar", "quantum", "atomic", "neon", "arctic", "ember",
+    "frost", "midnight", "crystal", "electric", "mellow", "plucky", "earnest",
+    "scrappy", "rambling",
+  ];
+
+  var usernameNouns = [
+    "fox", "owl", "otter", "badger", "lynx", "raven", "falcon", "heron",
+    "sparrow", "finch", "wren", "mantis", "beetle", "moth", "koi", "axolotl",
+    "narwhal", "octopus", "urchin", "fern", "oak", "pine", "comet", "nebula",
+    "quasar", "atlas", "compass", "lantern", "anchor", "beacon", "prism",
+    "cipher", "abacus", "scroll", "glyph", "oracle", "codex", "sigil", "rune",
+    "signal",
+  ];
 
   var randomChoices = {
     personality: [
@@ -250,19 +268,41 @@
     ],
   };
 
+  function randomFrom(list) {
+    return list[Math.floor(Math.random() * list.length)];
+  }
+
   window.randomize = function (field) {
-    var list = randomChoices[field];
     var el = document.getElementById(field);
-    if (!list || !el) return;
+    if (!el) return;
     var current = el.value.trim();
-    var pick = list[Math.floor(Math.random() * list.length)];
-    // Try a few times to avoid the same value twice in a row
-    var attempts = 0;
-    while (pick === current && attempts < 6 && list.length > 1) {
-      pick = list[Math.floor(Math.random() * list.length)];
-      attempts++;
+    var pick;
+
+    if (field === "username") {
+      // Build a fresh adjective-noun pair, retrying a few times if it
+      // happens to be the same as the current value.
+      var attempts = 0;
+      do {
+        pick = randomFrom(usernameAdjectives) + "-" + randomFrom(usernameNouns);
+        attempts++;
+      } while (pick === current && attempts < 6);
+    } else {
+      var list = randomChoices[field];
+      if (!list) return;
+      pick = randomFrom(list);
+      var tries = 0;
+      while (pick === current && tries < 6 && list.length > 1) {
+        pick = randomFrom(list);
+        tries++;
+      }
     }
+
     el.value = pick;
+    // For the username, fire the input event so the existing handler
+    // sanitises + propagates the value to the display name autofill.
+    if (field === "username") {
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+    }
     // Visual feedback: tiny pulse on the field
     el.classList.add("just-randomized");
     setTimeout(function () {
