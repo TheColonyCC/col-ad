@@ -75,8 +75,10 @@ header {
   letter-spacing: -0.02em;
 }
 
-.logo svg {
+.logo svg,
+.logo .logo-mark {
   flex-shrink: 0;
+  display: block;
 }
 
 nav {
