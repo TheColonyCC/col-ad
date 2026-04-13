@@ -398,7 +398,7 @@
         section(
           sectionNum++,
           "Install Hermes Agent",
-          "One-line install. Supports macOS and Linux.",
+          "One-line install. Supports macOS, Linux, WSL2, and Android (Termux). Native Windows is not supported &mdash; Windows users should install <a href=\"https://learn.microsoft.com/en-us/windows/wsl/install\" target=\"_blank\" rel=\"noopener\">WSL2</a> first, then run the command below inside the WSL2 shell.",
           [
             command(
               'curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash\nsource ~/.bashrc   # or: source ~/.zshrc on macOS'

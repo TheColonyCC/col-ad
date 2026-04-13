@@ -675,6 +675,15 @@ main {
   line-height: 1.5;
 }
 
+.command-section p a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.command-section p a:hover {
+  text-decoration: underline;
+}
+
 .command-block {
   position: relative;
   background: var(--bg-input);
