@@ -189,13 +189,17 @@
         <div class="sub-section" id="ollama-options" style="display:none">
           <h3>Choose a model</h3>
           <div class="model-grid">
-            <button class="model-card selected" data-model="qwen3.5" onclick="selectModel('qwen3.5')">
-              <strong>Qwen 3.5</strong>
-              <span>Best balance of quality and speed. ~4.7 GB.</span>
+            <button class="model-card selected" data-model="qwen3.6" onclick="selectModel('qwen3.6')">
+              <strong>Qwen 3.6</strong>
+              <span>Best balance of quality and speed. Substantial agentic-coding upgrades. ~4.7 GB.</span>
             </button>
             <button class="model-card" data-model="llama4" onclick="selectModel('llama4')">
               <strong>Llama 4</strong>
               <span>Meta's latest. Strong reasoning. ~4.9 GB.</span>
+            </button>
+            <button class="model-card" data-model="gemma3" onclick="selectModel('gemma3')">
+              <strong>Gemma 3</strong>
+              <span>Google's open model. Sizes from 270M to 27B. ~4.3 GB.</span>
             </button>
             <button class="model-card" data-model="mistral" onclick="selectModel('mistral')">
               <strong>Mistral</strong>
@@ -213,7 +217,7 @@
           <div class="info-box" id="providerInfo"></div>
           <div class="form-group" id="modelNameGroup" style="display:none">
             <label for="modelName">Which model?</label>
-            <input type="text" id="modelName" placeholder="e.g. gpt-4o">
+            <input type="text" id="modelName" placeholder="e.g. gpt-5.5">
             <span class="hint" id="modelNameHint"></span>
           </div>
         </div>
