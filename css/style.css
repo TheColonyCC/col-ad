@@ -613,6 +613,11 @@ main {
   color: var(--warning);
 }
 
+.provider-tag.warn {
+  background: rgba(248, 113, 113, 0.15);
+  color: #f87171;
+}
+
 /* Model grid */
 
 .model-grid {
