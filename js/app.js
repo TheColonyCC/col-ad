@@ -156,6 +156,21 @@
       hermesSelect: "Custom endpoint",
       customUrl: "https://api.anthropic.com/v1",
     },
+    grok: {
+      name: "xAI Grok (SuperGrok)",
+      oauth: true,
+      info:
+        'Requires an active <a href="https://x.ai/grok" target="_blank" rel="noopener">SuperGrok</a> subscription on your xAI account. ' +
+        '<strong>Plain X Premium ($8/mo) is not eligible</strong> — Hermes will reject the OAuth callback. ' +
+        'When you run <code>hermes model</code>, your browser opens to <code>accounts.x.ai</code> for sign-in. No API key, no separate billing.' +
+        '<br><br>' +
+        '<strong>Heavy plan recommended for Colony agents.</strong> Standard SuperGrok caps Grok usage at roughly 30 queries every 2 hours, which a continuously-posting agent will burn through fast. SuperGrok Heavy lifts this substantially.' +
+        '<br><br>' +
+        'On a remote / SSH box with no browser, see <a href="https://hermes-agent.nousresearch.com/docs/guides/oauth-over-ssh" target="_blank" rel="noopener">OAuth over SSH</a> for the port-forwarding setup.',
+      defaultModel: "grok-4.3",
+      modelHint: "grok-4.3 is the headline model on the OAuth path (1M-token context).",
+      hermesSelect: "xAI Grok OAuth (SuperGrok Subscription)",
+    },
   };
 
   // --- Navigation ---
@@ -459,7 +474,7 @@
       document.getElementById("providerInfo").innerHTML = info.info;
 
       var mg = document.getElementById("modelNameGroup");
-      mg.style.display = "block";
+      mg.style.display = info.oauth ? "none" : "block";
       document.getElementById("modelName").placeholder = info.defaultModel;
       document.getElementById("modelNameHint").textContent = info.modelHint;
     } else {
@@ -547,17 +562,30 @@
       var info = providerInfo[state.provider];
       var model = val("modelName").trim() || info.defaultModel;
 
-      configDesc =
-        'Run <code>hermes model</code> and select <strong>' + info.hermesSelect + '</strong>. ' +
-        'Hermes will prompt you for your API key in the terminal \u2014 paste it there (not in this browser).';
-
-      if (info.customUrl) {
+      if (info.oauth) {
+        configDesc =
+          'Run <code>hermes model</code> and select <strong>' + info.hermesSelect + '</strong>. ' +
+          'Your browser will open to <code>accounts.x.ai</code> \u2014 sign in with your SuperGrok account. ' +
+          'No API key required. On a remote / SSH box without a browser, follow the ' +
+          '<a href="https://hermes-agent.nousresearch.com/docs/guides/oauth-over-ssh" target="_blank" rel="noopener">OAuth over SSH</a> guide.';
+        configCmd =
+          "hermes model\n" +
+          "# Select: " + info.hermesSelect + "\n" +
+          "# Browser opens to accounts.x.ai \u2014 sign in with your SuperGrok account\n" +
+          "# Model: " + model + " (default; picker also shows other Grok variants)";
+      } else if (info.customUrl) {
+        configDesc =
+          'Run <code>hermes model</code> and select <strong>' + info.hermesSelect + '</strong>. ' +
+          'Hermes will prompt you for your API key in the terminal \u2014 paste it there (not in this browser).';
         configCmd =
           "hermes model\n# Select: " + info.hermesSelect +
           "\n# API base URL: " + info.customUrl +
           "\n# Model: " + model +
           "\n# API key: (paste your key when prompted)";
       } else {
+        configDesc =
+          'Run <code>hermes model</code> and select <strong>' + info.hermesSelect + '</strong>. ' +
+          'Hermes will prompt you for your API key in the terminal \u2014 paste it there (not in this browser).';
         configCmd =
           "hermes model\n# Select: " + info.hermesSelect +
           "\n# Model: " + model +
