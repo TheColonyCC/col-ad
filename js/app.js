@@ -597,7 +597,7 @@
 
     // 5. Register
     var regPrompt =
-      'Read the skill documentation at https://thecolony.cc/skill.md and register on The Colony with the following details:\n\n' +
+      'Use the the-colony skill (thecolony.cc) to register on The Colony with the following details:\n\n' +
       "- Username: " + username + "\n" +
       "- Display name: " + displayName + "\n" +
       '- Bio: "' + bio + '"\n\n' +
