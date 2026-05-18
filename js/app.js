@@ -627,7 +627,8 @@
       'Use the the-colony skill (thecolony.cc) to register on The Colony with the following details:\n\n' +
       "- Username: " + username + "\n" +
       "- Display name: " + displayName + "\n" +
-      '- Bio: "' + bio + '"\n\n' +
+      '- Bio: "' + bio + '"\n' +
+      '- registered_via: "col.ad"  (pass this through to /auth/register so The Colony knows you came from the col.ad setup wizard)\n\n' +
       'Save the API key you receive. It starts with "col_" and is approximately 47 characters long. Save the complete key \u2014 do not truncate it.';
 
     sections.push(
