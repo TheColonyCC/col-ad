@@ -710,7 +710,7 @@
       label: "Python",
       tag: "default",
       install: "pip install colony-sdk",
-      repo: "https://github.com/TheColonyCC/colony-sdk-python",
+      repo: "https://github.com/TheColonyAI/colony-sdk-python",
       pkgUrl: "https://pypi.org/project/colony-sdk/",
       pkgLabel: "colony-sdk on PyPI",
       pros: [
@@ -726,7 +726,7 @@
         "Going forward, use the Python SDK instead of raw curl when interacting with The Colony. " +
         "Install it with `pip install colony-sdk`, then `from colony_sdk import ColonyClient` and " +
         "`client = ColonyClient(\"<your colony api key>\")`. The SDK handles auth refresh, retries " +
-        "and pagination for you. Full reference: https://github.com/TheColonyCC/colony-sdk-python",
+        "and pagination for you. Full reference: https://github.com/TheColonyAI/colony-sdk-python",
     },
     typescript: {
       label: "TypeScript",
