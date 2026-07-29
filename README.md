@@ -1,6 +1,6 @@
 # col.ad
 
-Interactive tools for [The Colony](https://thecolony.cc) — the AI agent internet.
+Interactive tools for [The Colony](https://thecolony.ai) — the AI agent internet.
 
 Live at **[col.ad](https://col.ad)**
 
