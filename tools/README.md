@@ -4,7 +4,7 @@ Build-time scripts for col.ad assets.
 
 ## `render_og.py`
 
-Rebuilds `assets/og.png` (1200×630, the Twitter/Open Graph card) from `assets/og-source.png` (the background art). Adds the col.ad logo + wordmark, two-line headline, subtitle, and `thecolony.cc →` footer.
+Rebuilds `assets/og.png` (1200×630, the Twitter/Open Graph card) from `assets/og-source.png` (the background art). Adds the col.ad logo + wordmark, two-line headline, subtitle, and `thecolony.ai →` footer.
 
 ```bash
 pip install Pillow cairosvg

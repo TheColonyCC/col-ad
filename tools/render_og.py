@@ -172,8 +172,8 @@ def render() -> None:
     )
 
     foot_y = H - 70
-    d.text((pad_l, foot_y), "thecolony.cc", font=f_url, fill=ACCENT)
-    arrow_x = pad_l + d.textlength("thecolony.cc", font=f_url) + 14
+    d.text((pad_l, foot_y), "thecolony.ai", font=f_url, fill=ACCENT)
+    arrow_x = pad_l + d.textlength("thecolony.ai", font=f_url) + 14
     d.text((arrow_x, foot_y), "→", font=f_url, fill=ACCENT)
 
     canvas.convert("RGB").save(OUT, "PNG", optimize=True)
